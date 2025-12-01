@@ -1,38 +1,41 @@
-# **Lekce 02: Tvorba UI (XML Layouts)**
+# **📱 Lekce 03: Logika a Interaktivita**
 
-V této fázi opouštíme prázdnou obrazovku a vytváříme skutečné uživatelské rozhraní.
+Máme hezké tlačítko, ale nic nedělá. V této lekci to změníme.
 
-Tato větev (`02-ui-layouts`) obsahuje hotový XML kód pro přihlašovací formulář.
+Tato větev (`03-logic-basic`) propojuje náš XML vzhled s Kotlin kódem.
 
 ## **Cíl této lekce**
 
-Naučit se pracovat s **XML Layouty** a poskládat prvky na obrazovku tak, aby to vypadalo dobře na různých telefonech.
-
-Používáme **ConstraintLayout**, což je moderní způsob, jak definovat vztahy mezi prvky (např. "Tlačítko je pod Heslem").
+Pochopit, jak v kódu (Kotlin) najít prvky, které jsme vytvořili v grafice (XML), a jak reagovat na akce uživatele.
 
 ## **Co se změnilo?**
 
-Hlavní změny proběhly v souboru:
+Pracujeme hlavně v souboru:
 
-* **app/src/main/res/layout/activity_main.xml**
+* **`app/src/main/java/.../MainActivity.kt`**
 
-Přidali jsme tyto prvky:
+### **Klíčové koncepty v kódu:**
 
-1. `<TextView>`: Nadpis "Vítejte!".
-2. `<EditText>` (id: `etUsername`): Pole pro jméno.
-3. `<EditText>` (id: `etPassword`): Pole pro heslo (všimněte si `inputType="textPassword"`).
-4. `<Button>` (id: `btnLogin`): Tlačítko pro odeslání.
+1. **`findViewById<Typ>(R.id.id_prvku)`**:
+    * Tímto příkazem říkáme: *"Najdi mi v paměti to tlačítko, které jsem v XML pojmenoval `btnLogin`."*
+    * Uložíme si ho do proměnné, abychom s ním mohli pracovat.
+2. **`setOnClickListener { ... }`**:
+    * Tady definujeme, co se má stát po kliknutí. Všechno uvnitř složených závorek `{}` se provede až ve chvíli, kdy uživatel klepne na displej.
+3. **`text.toString()`**:
+    * Získání obsahu textového pole.
+4. **`Toast.makeText(...).show()`**:
+    * Malá vyskakovací bublina (zpráva) dole na obrazovce. Ideální pro rychlou zpětnou vazbu.
 
 ## **Jak na to?**
 
-1. Přepněte se do této větve: `git checkout 02-ui-layouts`.
-2. Otevřete soubor `activity_main.xml`.
-3. Vpravo nahoře přepněte zobrazení na **Split** (uvidíte kód i náhled).
-4. Zkuste kliknout na nějaký prvek v náhledu – v kódu se vám zvýrazní.
-5. Zkuste změnit text tlačítka nebo barvu nadpisu.
+1. Spusťte aplikaci na telefonu/emulátoru.
+2. Zkuste kliknout na "Přihlásit se" bez vyplnění údajů -> Měl by se zobrazit Toast s chybou.
+3. Vyplňte jméno a heslo -> Měl by vás pozdravit Toast se jménem.
 
-## **Tip**
+## **Úkol k zamyšlení**
 
-Všimněte si atributů `app:layout_constraintTop_toBottomOf="..."`. Tyto řádky drží layout pohromadě. Kdybyste je smazali, všechny prvky by se "sesypaly" do levého horního rohu.
+Podívejte se do kódu `MainActivity.kt`.  
+Jak byste upravili podmínku `if`, aby aplikace vyžadovala, že heslo musí být delší než 5 znaků?  
+*(Nápověda: String má vlastnost `.length`)*
 
-*Až budete mít UI prozkoumané, můžeme se vrhnout na oživení tlačítka v další lekci.*
+*Gratuluji! Máte svou první interaktivní aplikaci.*
