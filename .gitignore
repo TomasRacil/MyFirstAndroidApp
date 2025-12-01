@@ -1,0 +1,26 @@
+# Gradle files
+.gradle/
+build/
+
+# Local configuration file (sdk path, etc)
+local.properties
+
+# Android Studio / IntelliJ files
+.idea/
+*.iml
+*.ipr
+*.iws
+out/
+
+# Android Local/Temp files
+captures/
+.externalNativeBuild
+.cxx
+.navigation/
+
+# macOS clutter
+.DS_Store
+
+# Keystores (NIKDY nenahrávat do repozitáře!)
+*.jks
+*.keystore
