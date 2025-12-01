@@ -1,4 +1,4 @@
-# **📱 Lekce 03: Logika a Interaktivita**
+# **Lekce 03: Logika a Interaktivita**
 
 Máme hezké tlačítko, ale nic nedělá. V této lekci to změníme.
 
