@@ -1,41 +1,33 @@
-# **📱 Lekce 03: Logika a Interaktivita**
+# **Lekce 04: Životní cyklus a Intenty**
 
-Máme hezké tlačítko, ale nic nedělá. V této lekci to změníme.
-
-Tato větev (`03-logic-basic`) propojuje náš XML vzhled s Kotlin kódem.
+Vítejte u klíčové lekce. Aplikace s jednou obrazovkou jsou nudné. Dnes se naučíme přecházet mezi obrazovkami a posílat si data.
 
 ## **Cíl této lekce**
 
-Pochopit, jak v kódu (Kotlin) najít prvky, které jsme vytvořili v grafice (XML), a jak reagovat na akce uživatele.
+1. Vytvořit **druhou aktivitu** (`SecondActivity`).
+2. Pochopit **Intent** (Záměr) - zpráva, která systému říká "Chci spustit něco dalšího".
+3. Poslat data (jméno uživatele) z první aktivity do druhé.
 
 ## **Co se změnilo?**
 
-Pracujeme hlavně v souboru:
-
-* **`app/src/main/java/.../MainActivity.kt`**
-
-### **Klíčové koncepty v kódu:**
-
-1. **`findViewById<Typ>(R.id.id_prvku)`**:
-    * Tímto příkazem říkáme: *"Najdi mi v paměti to tlačítko, které jsem v XML pojmenoval `btnLogin`."*
-    * Uložíme si ho do proměnné, abychom s ním mohli pracovat.
-2. **`setOnClickListener { ... }`**:
-    * Tady definujeme, co se má stát po kliknutí. Všechno uvnitř složených závorek `{}` se provede až ve chvíli, kdy uživatel klepne na displej.
-3. **`text.toString()`**:
-    * Získání obsahu textového pole.
-4. **`Toast.makeText(...).show()`**:
-    * Malá vyskakovací bublina (zpráva) dole na obrazovce. Ideální pro rychlou zpětnou vazbu.
+* **`SecondActivity.kt` + `activity_second.xml`**: Nová obrazovka s uvítáním.
+* **`AndroidManifest.xml`**: Zaregistrovali jsme novou aktivitu.
+* **`MainActivity.kt`**:
+    * Místo `Toast` zprávy vytváříme `Intent`.
+    * `putExtra("USER_NAME", username)`: Balíme data do nové aktivity.
+    * `startActivity(intent)`: Spustíme novou aktivitu.
 
 ## **Jak na to?**
 
-1. Spusťte aplikaci na telefonu/emulátoru.
-2. Zkuste kliknout na "Přihlásit se" bez vyplnění údajů -> Měl by se zobrazit Toast s chybou.
-3. Vyplňte jméno a heslo -> Měl by vás pozdravit Toast se jménem.
+1. Spusťte aplikaci.
+2. Zadejte jméno a heslo.
+3. Klikněte na **Přihlásit se**.
+4. Měli byste se ocitnout na nové obrazovce, která vás pozdraví jménem.
+5. Tlačítkem **Zpět** se vrátíte na přihlášení (metoda `finish()`).
 
-## **Úkol k zamyšlení**
+## **Úkol k zamyšlení (Životní cyklus)**
 
-Podívejte se do kódu `MainActivity.kt`.  
-Jak byste upravili podmínku `if`, aby aplikace vyžadovala, že heslo musí být delší než 5 znaků?  
-*(Nápověda: String má vlastnost `.length`)*
-
-*Gratuluji! Máte svou první interaktivní aplikaci.*
+Zkuste na přihlašovací obrazovce napsat jméno, ale neklikejte na Přihlásit.  
+Místo toho otočte telefon na šířku (v emulátoru tlačítko Rotate).  
+Co se stalo s textem? Zmizel?  
+Proč? Protože při otočení se aktivita zničí (`onDestroy`) a vytvoří znovu (`onCreate`), aby se přizpůsobila novému rozměru displeje. Proměnné se vymažou. To je základní problém životního cyklu, který budeme řešit později (pomocí `ViewModel` nebo `onSaveInstanceState`).

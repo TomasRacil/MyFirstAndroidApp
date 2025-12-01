@@ -8,6 +8,7 @@ import androidx.core.view.WindowInsetsCompat
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
+import android.content.Intent
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,8 +34,15 @@ class MainActivity : AppCompatActivity() {
 
             // Jednoduchá validace
             if (username.isNotEmpty() && password.isNotEmpty()) {
-                // Zobrazíme "Toast" zprávu
-                Toast.makeText(this, "Ahoj $username! Přihlašuji...", Toast.LENGTH_SHORT).show()
+                // Místo Toastu vytvoříme Intent pro přechod
+                // Intent(odkud, kam::class.java)
+                val intent = Intent(this, SecondActivity::class.java)
+
+                // Přibalíme data ("klíč", hodnota)
+                intent.putExtra("USER_NAME", username)
+
+                // Spustíme novou aktivitu
+                startActivity(intent)
             } else {
                 Toast.makeText(this, "Vyplňte prosím všechna pole.", Toast.LENGTH_SHORT).show()
             }
