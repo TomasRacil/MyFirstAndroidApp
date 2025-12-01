@@ -1,33 +1,37 @@
-# **Lekce 04: Životní cyklus a Intenty**
+# **Lekce 05: Řešení životního cyklu (ViewModel)**
 
-Vítejte u klíčové lekce. Aplikace s jednou obrazovkou jsou nudné. Dnes se naučíme přecházet mezi obrazovkami a posílat si data.
+V minulé lekci jsme zjistili nepříjemnou věc: když otočíte telefon, data z formuláře zmizí. Proč? Protože aktivita se zničí a vytvoří znovu.
+
+Dnes to opravíme pomocí **ViewModelu**.
 
 ## **Cíl této lekce**
 
-1. Vytvořit **druhou aktivitu** (`SecondActivity`).
-2. Pochopit **Intent** (Záměr) - zpráva, která systému říká "Chci spustit něco dalšího".
-3. Poslat data (jméno uživatele) z první aktivity do druhé.
+1. Pochopit, co je to **ViewModel**.
+2. Naučit se oddělovat data (State) od zobrazení (UI).
+3. Zajistit, aby data "přežila" rotaci displeje.
 
 ## **Co se změnilo?**
 
-* **`SecondActivity.kt` + `activity_second.xml`**: Nová obrazovka s uvítáním.
-* **`AndroidManifest.xml`**: Zaregistrovali jsme novou aktivitu.
+* **`build.gradle`**: Přidali jsme knihovny pro `lifecycle` a `viewmodel`.
+* **`MainViewModel.kt`**: Nová třída. Je to "trezor" na data. Android garantuje, že tento objekt nezničí při rotaci displeje.
 * **`MainActivity.kt`**:
-    * Místo `Toast` zprávy vytváříme `Intent`.
-    * `putExtra("USER_NAME", username)`: Balíme data do nové aktivity.
-    * `startActivity(intent)`: Spustíme novou aktivitu.
+    * Už si nepamatuje data sama.
+    * Ptá se ViewModelu: *"Máš pro mě něco uloženého?"*
+    * Používá delegáta `by viewModels()`.
 
-## **Jak na to?**
+## **Jak na to? (Test)**
 
 1. Spusťte aplikaci.
-2. Zadejte jméno a heslo.
-3. Klikněte na **Přihlásit se**.
-4. Měli byste se ocitnout na nové obrazovce, která vás pozdraví jménem.
-5. Tlačítkem **Zpět** se vrátíte na přihlášení (metoda `finish()`).
+2. Napište do jména "Petr".
+3. **Otočte telefon** (Rotate).
+4. **Sledujte zázrak:** Text "Petr" tam zůstal! 🎉
+    * *(V minulé lekci by zmizel).*
 
-## **Úkol k zamyšlení (Životní cyklus)**
+## **Proč to tak funguje?**
 
-Zkuste na přihlašovací obrazovce napsat jméno, ale neklikejte na Přihlásit.  
-Místo toho otočte telefon na šířku (v emulátoru tlačítko Rotate).  
-Co se stalo s textem? Zmizel?  
-Proč? Protože při otočení se aktivita zničí (`onDestroy`) a vytvoří znovu (`onCreate`), aby se přizpůsobila novému rozměru displeje. Proměnné se vymažou. To je základní problém životního cyklu, který budeme řešit později (pomocí `ViewModel` nebo `onSaveInstanceState`).
+ViewModel "žije" déle než Aktivita.
+
+1. Aktivita vznikne -> Vytvoří se ViewModel.
+2. Aktivita se otočí (zanikne) -> ViewModel **stále "žije"**.
+3. Nová Aktivita vznikne -> Připojí se ke **stejnému** ViewModelu a vezme si z něj data.
+4. Aktivita se definitivně ukončí (tlačítko Zpět) -> Teprve teď zanikne i ViewModel.

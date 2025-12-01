@@ -9,8 +9,14 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import android.content.Intent
+import androidx.activity.viewModels // Důležité pro delegát viewModels()
 
 class MainActivity : AppCompatActivity() {
+    // Získáme instanci ViewModelu.
+    // Díky "by viewModels()" se Android postará o to, že dostaneme
+    // tu STEJNOU instanci i po otočení displeje.
+    private val viewModel: MainViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -26,11 +32,19 @@ class MainActivity : AppCompatActivity() {
         val etPassword = findViewById<EditText>(R.id.etPassword)
         val btnLogin = findViewById<Button>(R.id.btnLogin)
 
+        // POKUD už máme data ve ViewModelu (např. po otočení), obnovíme je do UI
+        if (viewModel.storedUsername.isNotEmpty()) {
+            etUsername.setText(viewModel.storedUsername)
+        }
+
         // 2. Nastavíme posluchač události kliknutí (OnClickListener)
         btnLogin.setOnClickListener {
             // Získáme text z políček
             val username = etUsername.text.toString()
             val password = etPassword.text.toString()
+
+            // Uložíme data do ViewModelu pro případ budoucí rotace
+            viewModel.storedUsername = username
 
             // Jednoduchá validace
             if (username.isNotEmpty() && password.isNotEmpty()) {
