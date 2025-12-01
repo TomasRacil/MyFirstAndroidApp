@@ -1,31 +1,38 @@
-# **Lekce 01: Startovní bod**
+# **Lekce 02: Tvorba UI (XML Layouts)**
 
-Vítejte na startovní čáře vaší první Android aplikace!
+V této fázi opouštíme prázdnou obrazovku a vytváříme skutečné uživatelské rozhraní.
 
-Tato větev (`01-starter`) obsahuje čistý projekt vygenerovaný Android Studiem. Není v něm žádná naše vlastní logika ani složité úpravy.
+Tato větev (`02-ui-layouts`) obsahuje hotový XML kód pro přihlašovací formulář.
 
 ## **Cíl této lekce**
 
-V této fázi se seznámíte s prostředím a strukturou projektu. Vaším úkolem je:
+Naučit se pracovat s **XML Layouty** a poskládat prvky na obrazovku tak, aby to vypadalo dobře na různých telefonech.
 
-1. **Otevřít projekt** v Android Studiu.
-2. **Pochopit strukturu** (`manifest`, `res`, `java`).
-3. **Spustit aplikaci** na emulátoru nebo fyzickém telefonu.
-4. **Udělat drobné změny** v XML layoutu (změnit text "Hello World").
+Používáme **ConstraintLayout**, což je moderní způsob, jak definovat vztahy mezi prvky (např. "Tlačítko je pod Heslem").
 
-## **Struktura souborů**
+## **Co se změnilo?**
 
-Zde je rychlý přehled toho, co vidíte:
+Hlavní změny proběhly v souboru:
 
-* **`app/src/main/AndroidManifest.xml`**: "ID" aplikace. Definuje název, ikonku a aktivity.
-* **`app/src/main/java/.../MainActivity.kt`**: Hlavní vstupní bod. Zatím jen načítá layout.
-* **`app/src/main/res/layout/activity_main.xml`**: Vzhled obrazovky. Zde budete měnit texty a tlačítka.
-* **`build.gradle`**: Konfigurace sestavení (verze SDK, knihovny).
+* **app/src/main/res/layout/activity_main.xml**
 
-## **Jak začít?**
+Přidali jsme tyto prvky:
 
-1. Ujistěte se, že máte načtený projekt (Gradle Sync finished).
-2. Otevřete `activity_main.xml`.
-3. Zkuste přepsat text v `<TextView>` a spusťte aplikaci znovu.
+1. `<TextView>`: Nadpis "Vítejte!".
+2. `<EditText>` (id: `etUsername`): Pole pro jméno.
+3. `<EditText>` (id: `etPassword`): Pole pro heslo (všimněte si `inputType="textPassword"`).
+4. `<Button>` (id: `btnLogin`): Tlačítko pro odeslání.
 
-*Pokud se něco pokazí, můžete se vždy vrátit do tohoto čistého stavu příkazem `git checkout 01-starter`.*
+## **Jak na to?**
+
+1. Přepněte se do této větve: `git checkout 02-ui-layouts`.
+2. Otevřete soubor `activity_main.xml`.
+3. Vpravo nahoře přepněte zobrazení na **Split** (uvidíte kód i náhled).
+4. Zkuste kliknout na nějaký prvek v náhledu – v kódu se vám zvýrazní.
+5. Zkuste změnit text tlačítka nebo barvu nadpisu.
+
+## **Tip**
+
+Všimněte si atributů `app:layout_constraintTop_toBottomOf="..."`. Tyto řádky drží layout pohromadě. Kdybyste je smazali, všechny prvky by se "sesypaly" do levého horního rohu.
+
+*Až budete mít UI prozkoumané, můžeme se vrhnout na oživení tlačítka v další lekci.*
