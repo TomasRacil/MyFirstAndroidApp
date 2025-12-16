@@ -1,41 +1,32 @@
-# **Lekce 06: UI Chatu a Seznamy (RecyclerView)**
+# **Lekce 07: Ukládání dat (SharedPreferences)**
 
-V minulé lekci jsme se naučili posílat data (jméno uživatele) z jedné aktivity do druhé. Nyní ale chceme víc než jen statický text "Vítejte". Chceme dynamický chat, kde přibývají zprávy.
+V minulé lekci jsme vytvořili vzhled chatu. Ale aby chat fungoval po síti, musí vědět, **kam** se připojit (IP adresa a port serveru). Tato data si musí pamatovat i po vypnutí aplikace.
 
-Dnes se naučíme jednu z nejdůležitějších komponent v Androidu: **RecyclerView**.
+Dnes se naučíme ukládat malá data trvale do paměti telefonu.
 
 ## **Cíl této lekce**
 
-1. Pochopit, jak zobrazovat dlouhé seznamy dat pomocí **RecyclerView**.
-2. Naučit se **Adapter Pattern** – jak propojit čistá data (Kotlin List) s grafikou (XML).
-3. Vytvořit vlastní vzhled pro položku seznamu (chatovací bublinu).
+1. Vytvořit novou obrazovku **Nastavení**.
+2. Pochopit rozdíl mezi `Intent` (posílání dat teď) a `SharedPreferences` (ukládání dat navždy).
+3. Implementovat tlačítko v menu nebo na obrazovce pro přechod do nastavení.
 
 ## **Co se změnilo?**
 
-* **`Message.kt`**: Nová datová třída. Je to jen "přepravka" na data (obsahuje text, odesílatele a čas).
-* **`item_message.xml`**: Nový layout. Definuje, jak vypadá **jedna** zpráva (bublina + jméno).
-* **`MessageAdapter.kt`**: Nová třída. Je to "manažer", který bere data ze seznamu a sype je do `item_message.xml`.
-* **`activity_second.xml`**:
-    * Smazali jsme statický text.
-    * Přidali jsme `<RecyclerView>` (prostor pro seznam).
-    * Přidali jsme `<EditText>` a `<Button>` pro psaní zpráv.
-* **`SecondActivity.kt`**:
-    * Už jen nevypisuje jméno.
-    * Obsluhuje tlačítko "Odeslat".
-    * Říká adaptéru: *"Hej, mám novou zprávu, překresli se!"*
+* **`SettingsActivity.kt`**: Nová obrazovka. Obsahuje dvě políčka (IP a Port) a tlačítko Uložit.
+* **`activity_settings.xml`**: Vzhled nové obrazovky.
+* **`MainActivity.kt`**: Přidali jsme ikonku/tlačítko pro otevření nastavení.
 
 ## **Jak na to? (Test)**
 
-1. Spusťte aplikaci a přihlašte se svým jménem (např. "Tomáš").
-2. Otevře se obrazovka chatu (SecondActivity).
-3. Do spodního pole napište "Ahoj světe".
-4. Klikněte na **Odeslat**.
-5. **Sledujte výsledek:** Zpráva se okamžitě objeví v seznamu nahoře. Můžete přidávat další a seznam bude rolovat.
+1. Na hlavní obrazovce klikněte na nové tlačítko **Nastavení** (ozubené kolo).
+2. Zadejte IP adresu (např. `10.0.2.2` pro localhost emulátoru) a port (např. `3000`).
+3. Klikněte na **Uložit**.
+4. Vypněte a zapněte aplikaci.
+5. Jděte znovu do nastavení -> **Hodnoty tam stále jsou!** 🎉
 
 ## **Proč to tak funguje?**
 
-Starší Android používal `ListView`, který byl pomalý. My používáme **RecyclerView**.
+**SharedPreferences** je jako malý notýsek, který má aplikace schovaný v telefonu. Zapisuje si do něj dvojice *Klíč-Hodnota*.
 
-1. **Efektivita:** Když máte v chatu 1000 zpráv, telefon nevytvoří 1000 grafických prvků (to by ho zabilo). Vytvoří jich jen tolik, kolik se vejde na displej (např. 10).
-2. **Recyklace:** Když odscrolujete zprávu nahoru pryč z obrazovky, Android ten grafický prvek nezničí. Vezme ho, vymaže starý text, dá do něj nový text (zprávu, která právě přijíždí zespodu) a použije ho znovu.
-3. **Adapter:** Funguje jako most. Na jedné straně má `List<Message>` (data), na druhé straně `RecyclerView` (grafika). Jeho úkolem je lepit data do grafických šablon.
+* **Zápis:** Otevřu notýsek (`edit()`), napíšu "IP" = "10.0.0.1", zavřu a uložím (`apply()`).
+* **Čtení:** Otevřu notýsek, podívám se, co je u "IP". Pokud nic, použiji výchozí hodnotu.
