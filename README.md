@@ -1,32 +1,28 @@
-# **Lekce 07: Ukládání dat (SharedPreferences)**
+# **Lekce 08: Síťová komunikace a Coroutines (Odesílání)**
 
-V minulé lekci jsme vytvořili vzhled chatu. Ale aby chat fungoval po síti, musí vědět, **kam** se připojit (IP adresa a port serveru). Tato data si musí pamatovat i po vypnutí aplikace.
-
-Dnes se naučíme ukládat malá data trvale do paměti telefonu.
+V předchozích lekcích jsme vytvořili UI chatu a nastavení serveru. Teď je čas data skutečně odeslat "ven" z telefonu.
 
 ## **Cíl této lekce**
 
-1. Vytvořit novou obrazovku **Nastavení**.
-2. Pochopit rozdíl mezi `Intent` (posílání dat teď) a `SharedPreferences` (ukládání dat navždy).
-3. Implementovat tlačítko v menu nebo na obrazovce pro přechod do nastavení.
+1. Pochopit, proč síťová komunikace nesmí běžet na hlavním vlákně.
+2. Naučit se používat **Kotlin Coroutines** pro operace na pozadí.
+3. Odeslat zprávu na TCP server.
 
 ## **Co se změnilo?**
 
-* **`SettingsActivity.kt`**: Nová obrazovka. Obsahuje dvě políčka (IP a Port) a tlačítko Uložit.
-* **`activity_settings.xml`**: Vzhled nové obrazovky.
-* **`MainActivity.kt`**: Přidali jsme ikonku/tlačítko pro otevření nastavení.
+* **`AndroidManifest.xml`**: Přidali jsme `<uses-permission android:name="android.permission.INTERNET" />`. Bez toho by aplikace spadla s chybou SecurityException.
+* **`SecondActivity.kt`**:
+    * Přidali jsme `CoroutineScope(Dispatchers.IO)`.
+    * Tlačítko "Odeslat" už jen nepřidává zprávu do seznamu, ale otevírá **Socket** a posílá data.
 
 ## **Jak na to? (Test)**
 
-1. Na hlavní obrazovce klikněte na nové tlačítko **Nastavení** (ozubené kolo).
-2. Zadejte IP adresu (např. `10.0.2.2` pro localhost emulátoru) a port (např. `3000`).
-3. Klikněte na **Uložit**.
-4. Vypněte a zapněte aplikaci.
-5. Jděte znovu do nastavení -> **Hodnoty tam stále jsou!** 🎉
+Aby aplikace fungovala, potřebujete druhou stranu – TCP Server, který bude zprávy přijímat.
 
-## **Proč to tak funguje?**
+Návod na zprovoznění testovacího serveru a postup pro propojení telefonu přes Hotspot najdete v hlavním repozitáři, ze kterého jste byli na tento projekt přesměrováni.
 
-**SharedPreferences** je jako malý notýsek, který má aplikace schovaný v telefonu. Zapisuje si do něj dvojice *Klíč-Hodnota*.
+## **Proč Coroutines?**
 
-* **Zápis:** Otevřu notýsek (`edit()`), napíšu "IP" = "10.0.0.1", zavřu a uložím (`apply()`).
-* **Čtení:** Otevřu notýsek, podívám se, co je u "IP". Pokud nic, použiji výchozí hodnotu.
+Android má pravidlo: **Hlavní vlákno (Main Thread) se stará o vykreslování UI.** Pokud byste na něm zkusili připojit k serveru (což může trvat 2 sekundy), aplikace by na 2 sekundy "zamrzla". Uživatel by nemohl na nic kliknout.
+
+Proto používáme launch(Dispatchers.IO), což řekne Androidu: *"Tuhle těžkou práci udělej na vedlejším vlákně a neblokuj tlačítka."*
