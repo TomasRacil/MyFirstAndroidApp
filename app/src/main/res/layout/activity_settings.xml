@@ -6,71 +6,56 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="20dp"
-    tools:context=".MainActivity">
-
-    <Button
-        android:id="@+id/btnSettings"
-        style="?attr/borderlessButtonStyle"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:text="@string/settings_icon"
-        android:textSize="24sp"
-        android:textColor="?attr/colorPrimary"
-        android:contentDescription="@string/settings_string"
-        android:padding="0dp"
-        android:insetTop="0dp"
-        android:insetBottom="0dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    tools:context=".SettingsActivity">
 
     <TextView
-        android:id="@+id/tvTitle"
+        android:id="@+id/tvSettingsTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/v_tejte"
-        android:textSize="32sp"
+        android:text="@string/server_settings"
+        android:textSize="24sp"
         android:textStyle="bold"
-        android:layout_marginBottom="40dp"
-        app:layout_constraintBottom_toTopOf="@+id/etUsername"
+        android:layout_marginBottom="32dp"
+        app:layout_constraintBottom_toTopOf="@+id/etIpAddress"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_chainStyle="packed" />
 
     <EditText
-        android:id="@+id/etUsername"
+        android:id="@+id/etIpAddress"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:hint="@string/u_ivatelsk_jm_no"
-        android:inputType="textPersonName"
+        android:hint="@string/ip_adress_example"
+        android:inputType="number|textUri"
         android:minHeight="48dp"
         android:layout_marginBottom="16dp"
-        app:layout_constraintBottom_toTopOf="@+id/etPassword"
+        app:layout_constraintBottom_toTopOf="@+id/etPort"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvTitle" />
+        app:layout_constraintTop_toBottomOf="@+id/tvSettingsTitle" />
 
     <EditText
-        android:id="@+id/etPassword"
+        android:id="@+id/etPort"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:hint="@string/heslo"
-        android:inputType="textPassword"
+        android:hint="@string/port_example"
+        android:inputType="number"
         android:minHeight="48dp"
         android:layout_marginBottom="24dp"
-        app:layout_constraintBottom_toTopOf="@+id/btnLogin"
+        app:layout_constraintBottom_toTopOf="@+id/btnSaveSettings"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etUsername" />
+        app:layout_constraintTop_toBottomOf="@+id/etIpAddress" />
 
     <Button
-        android:id="@+id/btnLogin"
+        android:id="@+id/btnSaveSettings"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="@string/p_ihl_sit_se"
+        android:text="@string/save_and_return"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etPassword" />
+        app:layout_constraintTop_toBottomOf="@+id/etPort" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
