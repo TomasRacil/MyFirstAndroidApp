@@ -10,20 +10,14 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import java.io.PrintWriter
-import java.net.InetSocketAddress
-import java.net.Socket
 
 class SecondActivity : AppCompatActivity() {
 
-    // Seznam zpráv (data)
-    private val messageList = mutableListOf<Message>()
+    // Použijeme delegáta viewModels() pro získání ChatViewModel
+    private val chatViewModel: ChatViewModel by viewModels()
 
     // Adapter (propojení dat s grafikou)
     private lateinit var messageAdapter: MessageAdapter
@@ -48,71 +42,52 @@ class SecondActivity : AppCompatActivity() {
         val btnSend: Button = findViewById(R.id.btnSend)
         val progressBar: ProgressBar = findViewById(R.id.progressBar)
 
-        // 3. Nastavení RecyclerView
-        messageAdapter = MessageAdapter(messageList)
+        // Nastavení Adapteru (začínáme s prázdným seznamem)
+        messageAdapter = MessageAdapter(emptyList())
         recyclerView.adapter = messageAdapter
-        recyclerView.layoutManager = LinearLayoutManager(this)
 
-        // Načteme nastavení serveru
+        val layoutManager = LinearLayoutManager(this)
+        layoutManager.stackFromEnd = true
+        recyclerView.layoutManager = layoutManager
+
+        // --- 1. Načtení nastavení a připojení ---
         val sharedPref = getSharedPreferences("ChatPrefs", MODE_PRIVATE)
         val serverIp = sharedPref.getString("SERVER_IP", "10.0.2.2") ?: "10.0.2.2"
         val serverPort = sharedPref.getInt("SERVER_PORT", 6000)
 
-        // 4. Logika tlačítka Odeslat
+        // Řekneme ViewModelu, ať se připojí (pokud už není)
+        chatViewModel.connect(serverIp, serverPort, userName)
+
+        // --- 2. Sledování změn (Observer) ---
+
+        // Sledujeme seznam zpráv
+        chatViewModel.messages.observe(this) { messages ->
+            // Když přijdou nové zprávy, aktualizujeme adaptér
+            // Pro jednoduchost vytvoříme nový adaptér nebo bychom mohli aktualizovat data uvnitř
+            // Tady uděláme "rychlou" variantu - update dat v adapteru by byl čistší, ale toto stačí.
+            messageAdapter = MessageAdapter(messages)
+            recyclerView.adapter = messageAdapter
+            recyclerView.scrollToPosition(messages.size - 1)
+        }
+
+        // Sledujeme stav připojení
+        chatViewModel.connectionStatus.observe(this) { status ->
+            if (status.startsWith("Chyba") || status == "Odpojeno") {
+                Toast.makeText(this, status, Toast.LENGTH_SHORT).show()
+                progressBar.visibility = View.GONE
+            } else if (status == "Připojování...") {
+                progressBar.visibility = View.VISIBLE
+            } else if (status == "Připojeno") {
+                progressBar.visibility = View.GONE
+            }
+        }
+
+        // --- 3. Odesílání ---
         btnSend.setOnClickListener {
             val text = etInput.text.toString()
-
             if (text.isNotEmpty()) {
-                progressBar.visibility = View.VISIBLE
-                btnSend.isEnabled = false
-
-                // 1. Spustíme Coroutinu na IO vlákně (pozadí)
-                CoroutineScope(Dispatchers.IO).launch {
-                    try {
-                        // 2. Vytvoříme spojení (toto blokuje, proto jsme na pozadí)
-                        val socket = Socket()
-                        socket.connect(InetSocketAddress(serverIp, serverPort), 2000)
-                        val writer = PrintWriter(socket.getOutputStream(), true)
-
-                        // 3. Pošleme zprávu ve formátu "Jméno: Text"
-                        writer.println("$userName: $text")
-
-                        // Zavřeme spojení (pro tento jednoduchý příklad odeslání)
-                        // V další lekci (čtení) to budeme muset nechat otevřené.
-                        socket.close()
-
-                        // 4. Pokud se to povedlo, aktualizujeme UI
-                        // UI se SMÍ měnit jen na hlavním vlákně (Main)
-                        withContext(Dispatchers.Main) {
-                            val newMessage = Message(sender = "Já", text = text)
-                            messageList.add(newMessage)
-                            messageAdapter.notifyItemInserted(messageList.size - 1)
-                            recyclerView.scrollToPosition(messageList.size - 1)
-                            etInput.text.clear()
-                        }
-
-                    } catch (e: Exception) {
-                        // 5. Chyba (server nejede, špatná IP...)
-                        withContext(Dispatchers.Main) {
-                            Toast.makeText(
-                                this@SecondActivity,
-                                "Chyba připojení k $serverIp:$serverPort\n${e.message}",
-                                Toast.LENGTH_LONG
-                            ).show()
-                            // Pro výukové účely přidáme zprávu lokálně, i když selže síť,
-                            // aby student viděl, co napsal (volitelné).
-                            // Tady to necháme jen vypsat chybu.
-                        }
-                        e.printStackTrace()
-                    } finally {
-                        // Toto proběhne VŽDY (ať už úspěch nebo chyba)
-                        // Vrátíme UI do původního stavu
-                        withContext(Dispatchers.Main) {
-                            progressBar.visibility = View.GONE
-                            btnSend.isEnabled = true
-                        }
-                    }
-                }
+                chatViewModel.sendMessage(userName, text)
+                etInput.text.clear()
             }
         }
     }

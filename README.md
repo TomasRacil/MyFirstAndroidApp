@@ -1,28 +1,25 @@
-# **Lekce 08: Síťová komunikace a Coroutines (Odesílání)**
+# **Lekce 09: Příjem zpráv a ViewModel**
 
-V předchozích lekcích jsme vytvořili UI chatu a nastavení serveru. Teď je čas data skutečně odeslat "ven" z telefonu.
+Náš chat už umí odesílat zprávy, ale stále nevíme, jestli někdo odpovídá. Dnes naučíme aplikaci **naslouchat**.
 
 ## **Cíl této lekce**
 
-1. Pochopit, proč síťová komunikace nesmí běžet na hlavním vlákně.
-2. Naučit se používat **Kotlin Coroutines** pro operace na pozadí.
-3. Odeslat zprávu na TCP server.
+1. Přesunout síťovou logiku do **ViewModelu** (aby spojení přežilo otočení displeje).
+2. Spustit nekonečnou smyčku pro čtení zpráv na pozadí.
+3. Aktualizovat seznam zpráv v reálném čase, když někdo napíše.
 
 ## **Co se změnilo?**
 
-* **`AndroidManifest.xml`**: Přidali jsme `<uses-permission android:name="android.permission.INTERNET" />`. Bez toho by aplikace spadla s chybou SecurityException.
-* **`SecondActivity.kt`**:
-    * Přidali jsme `CoroutineScope(Dispatchers.IO)`.
-    * Tlačítko "Odeslat" už jen nepřidává zprávu do seznamu, ale otevírá **Socket** a posílá data.
+* **ChatViewModel.kt**: Nová třída. Zde se odehrává veškerá magie sítě.
+    * Drží otevřený Socket.
+    * Má smyčku while(true), která čte řádky ze serveru.
+    * Používá LiveData, aby dala vědět UI: *"Mám novou zprávu\!"*
+* **SecondActivity.kt**:
+    * Už se nestará o síť přímo.
+    * Jen sleduje ChatViewModel a překresluje seznam.
 
-## **Jak na to? (Test)**
+## **Jak testovat?**
 
 Aby aplikace fungovala, potřebujete druhou stranu – TCP Server, který bude zprávy přijímat.
 
 Návod na zprovoznění testovacího serveru a postup pro propojení telefonu přes Hotspot najdete v hlavním repozitáři, ze kterého jste byli na tento projekt přesměrováni.
-
-## **Proč Coroutines?**
-
-Android má pravidlo: **Hlavní vlákno (Main Thread) se stará o vykreslování UI.** Pokud byste na něm zkusili připojit k serveru (což může trvat 2 sekundy), aplikace by na 2 sekundy "zamrzla". Uživatel by nemohl na nic kliknout.
-
-Proto používáme launch(Dispatchers.IO), což řekne Androidu: *"Tuhle těžkou práci udělej na vedlejším vlákně a neblokuj tlačítka."*
