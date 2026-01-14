@@ -1,3 +1,16 @@
 <resources>
     <string name="app_name">My First Android App</string>
+    <string name="type_a_message">Napiš zprávu…</string>
+    <string name="send">Odeslat</string>
+    <string name="nastaven_p_ipojen">Nastavení připojení</string>
+    <string name="p_ihl_sit_se">Přihlásit se</string>
+    <string name="heslo">Heslo</string>
+    <string name="u_ivatelsk_jm_no">Uživatelské jméno</string>
+    <string name="v_tejte">Vítejte!</string>
+    <string name="settings_icon">⚙</string>
+    <string name="settings_string">Nastavení</string>
+    <string name="server_settings">Nastavení Serveru</string>
+    <string name="ip_adress_example">IP Adresa (např. 10.0.2.2)</string>
+    <string name="port_example">Port (např. 8080)</string>
+    <string name="save_and_return">Uložit a Zpět</string>
 </resources>

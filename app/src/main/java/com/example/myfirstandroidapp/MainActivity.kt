@@ -31,10 +31,17 @@ class MainActivity : AppCompatActivity() {
         val etUsername = findViewById<EditText>(R.id.etUsername)
         val etPassword = findViewById<EditText>(R.id.etPassword)
         val btnLogin = findViewById<Button>(R.id.btnLogin)
+        val btnSettings = findViewById<Button>(R.id.btnSettings)
 
         // POKUD už máme data ve ViewModelu (např. po otočení), obnovíme je do UI
         if (viewModel.storedUsername.isNotEmpty()) {
             etUsername.setText(viewModel.storedUsername)
+        }
+
+        // Obsluha tlačítka nastavení
+        btnSettings.setOnClickListener {
+            val intent = Intent(this, SettingsActivity::class.java)
+            startActivity(intent)
         }
 
         // 2. Nastavíme posluchač události kliknutí (OnClickListener)

@@ -46,7 +46,8 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+    implementation("androidx.navigation:navigation-fragment-ktx:2.9.6")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.10.0")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.10.0")
-    implementation("androidx.activity:activity-ktx:1.8.0") // Pro snadnější získání viewModels()
+    implementation("androidx.activity:activity-ktx:1.12.1") // Pro snadnější získání viewModels()
 }
